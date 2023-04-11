@@ -1,8 +1,17 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
+import styled from "styled-components";
 
 import { Layout } from "@/components";
+import { Button } from "@/ui";
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/verbs-couple");
+  };
+
   return (
     <>
       <Head>
@@ -12,8 +21,20 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <main>Main</main>
+        <Root>
+          <Button text="Найти пару" onClick={handleClick} />
+        </Root>
       </Layout>
     </>
   );
 }
+
+const Root = styled.main`
+  width: 100%;
+  position: relative;
+  width: 100%;
+  padding: 32px 86px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;

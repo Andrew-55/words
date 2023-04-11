@@ -15,7 +15,7 @@ const Root = styled.header`
   width: 100%;
   position: relative;
   width: 100%;
-  padding: 32px 86px;
+  padding: 24px 86px;
   display: flex;
   justify-content: space-between;
   align-items: center;
