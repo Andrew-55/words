@@ -7,6 +7,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   id: string;
   text: string;
+  isActive: boolean;
   onClickButton: (id: string) => void;
   isDisabled?: boolean;
 }
@@ -15,25 +16,18 @@ export const ButtonWords: FC<Props> = ({
   className,
   text,
   id,
+  isActive,
   onClickButton,
   ...props
 }) => {
-  const [isPressed, setIsPressed] = useState(false);
-
   const handleClick = () => {
-    if (!isPressed) {
-      onClickButton(id);
-    }
-    if (isPressed) {
-      onClickButton("");
-    }
-    setIsPressed((prev) => !prev);
+    onClickButton(id);
   };
 
   return (
     <Root
       className={className}
-      $isPressed={isPressed}
+      $isActive={isActive}
       onClick={handleClick}
       {...props}
     >
@@ -44,7 +38,7 @@ export const ButtonWords: FC<Props> = ({
 
 const Root = styled.button<{
   $isDisabled?: boolean;
-  $isPressed: boolean;
+  $isActive: boolean;
 }>`
   ${TYPOGRAPHY.THICCCBOI_Bold_24px};
   box-shadow: 0px 5px 18px ${COLORS.btn_box_shadow};
@@ -64,8 +58,8 @@ const Root = styled.button<{
     border: 2px solid ${COLORS.white_smoke};
   }
 
-  ${({ $isPressed }) =>
-    $isPressed &&
+  ${({ $isActive }) =>
+    $isActive &&
     css`
       border: 2px solid ${COLORS.green};
       &:hover,

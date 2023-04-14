@@ -1,52 +1,84 @@
 import Head from "next/head";
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 
 import { Layout } from "@/components";
 import { MOCK_DATA } from "@/store/MOCK_DATA";
 import { TYPOGRAPHY } from "@/styles";
+import { COLORS, ERROR_MESSAGE } from "@/styles/constants";
 import { ButtonWords } from "@/ui";
-import { shuffleArray } from "@/utils/functions/logic-functions";
+import { getDuringTime, shuffleArray } from "@/utils/functions/logic-functions";
 
-const verbsEnglish = MOCK_DATA.verbs.map((verb) => {
-  return { id: verb.id, text: verb.infinitive };
-});
-const verbsRussian = MOCK_DATA.verbs.map((verb) => {
-  return { id: verb.id, text: verb.translation };
-});
-
-const verbsEnglishRandom = shuffleArray(verbsEnglish);
-const verbsRussianRandom = shuffleArray(verbsRussian);
+type VerbType = {
+  id: string;
+  text: string;
+};
 
 export default function VerbsCouple() {
-  const [currentId, setCurrentId] = useState("");
+  const [currentIdEnglish, setCurrentIdEnglish] = useState("");
+  const [currentIdRussian, setCurrentIdRussian] = useState("");
   const [countMistake, setCountMistake] = useState(0);
+  const [time, setTime] = useState(0);
 
-  const [verbsEnglishShow, setVerbsEnglishShow] = useState(verbsEnglishRandom);
-  const [verbsRussianShow, setVerbsRussianShow] = useState(verbsRussianRandom);
+  const [verbsEnglishShow, setVerbsEnglishShow] = useState<VerbType[]>();
+  const [verbsRussianShow, setVerbsRussianShow] = useState<VerbType[]>();
 
-  const handleClickButton = (id: string) => {
-    if (!currentId) {
-      setCurrentId(id);
+  useEffect(() => {
+    if (!verbsEnglishShow && !verbsRussianShow) {
+      const verbsEnglish = MOCK_DATA.verbs.map((verb) => {
+        return { id: verb.id, text: verb.infinitive };
+      });
+      const verbsRussian = MOCK_DATA.verbs.map((verb) => {
+        return { id: verb.id, text: verb.translation };
+      });
+      setVerbsEnglishShow(shuffleArray(verbsEnglish));
+      setVerbsRussianShow(shuffleArray(verbsRussian));
+    }
+  }, [verbsEnglishShow, verbsRussianShow]);
+
+  const handleClickButtonEnglish = (id: string) => {
+    if (currentIdEnglish === id) {
+      setCurrentIdEnglish("");
+    } else {
+      setCurrentIdEnglish(id);
+    }
+  };
+
+  const handleClickButtonRussian = (id: string) => {
+    if (currentIdRussian === id) {
+      setCurrentIdRussian("");
+    } else {
+      setCurrentIdRussian(id);
+    }
+  };
+
+  useEffect(() => {
+    if (!currentIdEnglish || !currentIdRussian) {
       return;
     }
-    if (!id) {
-      setCurrentId("");
-      return;
-    }
-    if (currentId === id) {
-      const nowEnglishVerbs = verbsEnglishShow.filter((verb) => verb.id !== id);
-      const nowRussianVerbs = verbsRussianShow.filter((verb) => verb.id !== id);
+
+    if (currentIdEnglish === currentIdRussian) {
+      const nowEnglishVerbs =
+        verbsEnglishShow &&
+        verbsEnglishShow.filter((verb) => verb.id !== currentIdEnglish);
+      const nowRussianVerbs =
+        verbsRussianShow &&
+        verbsRussianShow.filter((verb) => verb.id !== currentIdRussian);
 
       setVerbsEnglishShow(nowEnglishVerbs);
       setVerbsRussianShow(nowRussianVerbs);
-      setCurrentId("");
+      setCurrentIdEnglish("");
+      setCurrentIdRussian("");
     }
-    if (currentId !== id) {
-      setCurrentId("");
+    if (currentIdEnglish !== currentIdRussian) {
+      setCurrentIdEnglish("");
+      setCurrentIdRussian("");
       setCountMistake((prev) => prev + 1);
+      toast(ERROR_MESSAGE.wrongVerbsCouple, { type: "error" });
     }
-  };
+  }, [currentIdEnglish, currentIdRussian, verbsEnglishShow, verbsRussianShow]);
 
   return (
     <>
@@ -59,29 +91,39 @@ export default function VerbsCouple() {
       <Layout>
         <Root>
           <InfoBlock>
-            <span>{`Осталось слов: ${verbsEnglishShow.length}`}</span>
-            <span>{`Количество ошибок ${countMistake}`}</span>
+            <InfoBlockRight>
+              <span>{`Осталось слов: ${verbsEnglishShow?.length || 0}`}</span>
+              <span>{`Количество ошибок: ${countMistake}`}</span>
+              <span>{`Время прохождения: ${time}`}</span>
+            </InfoBlockRight>
+            <StyledLink href="/verbs-table">
+              Посмотреть таблицу глаголов
+            </StyledLink>
           </InfoBlock>
           <WrapVerbs>
             <WrapButton>
-              {verbsEnglishShow.map((verb) => (
-                <ButtonWords
-                  key={verb.id}
-                  id={verb.id}
-                  text={verb.text}
-                  onClickButton={handleClickButton}
-                />
-              ))}
+              {verbsEnglishShow &&
+                verbsEnglishShow.map((verb) => (
+                  <ButtonWords
+                    key={verb.id}
+                    id={verb.id}
+                    text={verb.text}
+                    isActive={verb.id === currentIdEnglish}
+                    onClickButton={handleClickButtonEnglish}
+                  />
+                ))}
             </WrapButton>
             <WrapButton>
-              {verbsRussianShow.map((verb) => (
-                <ButtonWords
-                  key={verb.id}
-                  id={verb.id}
-                  text={verb.text}
-                  onClickButton={handleClickButton}
-                />
-              ))}
+              {verbsRussianShow &&
+                verbsRussianShow.map((verb) => (
+                  <ButtonWords
+                    key={verb.id}
+                    id={verb.id}
+                    text={verb.text}
+                    isActive={verb.id === currentIdRussian}
+                    onClickButton={handleClickButtonRussian}
+                  />
+                ))}
             </WrapButton>
           </WrapVerbs>
         </Root>
@@ -97,6 +139,12 @@ const Root = styled.main`
   padding: 32px 86px;
 `;
 
+const StyledLink = styled(Link)`
+  &:hover {
+    color: ${COLORS.red};
+  }
+`;
+
 const WrapVerbs = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -105,14 +153,25 @@ const WrapVerbs = styled.div`
 
 const WrapButton = styled.div`
   display: flex;
+  max-height: 700px;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 15px;
+  overflow-y: auto;
 `;
 
 const InfoBlock = styled.div`
   ${TYPOGRAPHY.THICCCBOI_Medium_20px}
   margin-bottom: 20px;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 50px;
+`;
+
+const InfoBlockRight = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
   column-gap: 50px;
 `;

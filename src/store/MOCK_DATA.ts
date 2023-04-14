@@ -376,7 +376,7 @@ export const MOCK_DATA = {
       infinitive: "learn",
       past: "learnt",
       pastParticiple: "learnt",
-      translation: "учить",
+      translation: "учиться",
     },
     {
       id: "55",

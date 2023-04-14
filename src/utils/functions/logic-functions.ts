@@ -18,3 +18,8 @@ export const shuffleArray = <T>(array: T[]) => {
 
   return array;
 };
+
+export const getDuringTime = (startDate: Date) => {
+  const currentDate = new Date();
+  return (currentDate.getTime() - startDate.getTime()) / 1000;
+};

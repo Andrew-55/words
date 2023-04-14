@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
 
@@ -6,7 +7,7 @@ import { COLORS, TYPOGRAPHY } from "@/styles";
 export const Header = () => {
   return (
     <Root>
-      <Logo>WORDS</Logo>
+      <Logo href="/">WORDS</Logo>
     </Root>
   );
 };
@@ -22,7 +23,10 @@ const Root = styled.header`
   border-bottom: thick double ${COLORS.white_smoke};
 `;
 
-const Logo = styled.span`
+const Logo = styled(Link)`
   ${TYPOGRAPHY.DM_Sans_Bold_54px}
   text-transform: uppercase;
+  &:hover {
+    color: ${COLORS.red};
+  }
 `;
