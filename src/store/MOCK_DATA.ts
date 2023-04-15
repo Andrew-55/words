@@ -726,7 +726,7 @@ export const MOCK_DATA = {
       infinitive: "sweep",
       past: "swept",
       pastParticiple: "swept",
-      translation: "красть",
+      translation: "мести; промчаться",
     },
     {
       id: "105",

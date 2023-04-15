@@ -1,12 +1,16 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 
+import { SvgArrowLeft } from "@/assets";
 import { Layout } from "@/components";
 import { MOCK_DATA } from "@/store/MOCK_DATA";
 import { TYPOGRAPHY } from "@/styles";
 import { COLORS } from "@/styles/constants";
+import { ButtonIcon } from "@/ui";
 
 export default function VerbsTable() {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -17,6 +21,11 @@ export default function VerbsTable() {
       </Head>
       <Layout>
         <Root>
+          <StyledButton
+            icon={<SvgArrowLeft />}
+            text="Назад"
+            onClick={() => router.back()}
+          />
           <TableContainer>
             <table>
               <StyledCaption>
@@ -57,6 +66,13 @@ const Root = styled.main`
   padding: 32px 86px;
   display: flex;
   justify-content: center;
+`;
+
+const StyledButton = styled(ButtonIcon)`
+  position: absolute;
+  left: 86px;
+  flex-direction: row-reverse;
+  ${TYPOGRAPHY.THICCCBOI_Bold_20px}
 `;
 
 const TableContainer = styled.div`

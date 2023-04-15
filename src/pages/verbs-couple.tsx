@@ -9,7 +9,7 @@ import { MOCK_DATA } from "@/store/MOCK_DATA";
 import { TYPOGRAPHY } from "@/styles";
 import { COLORS, ERROR_MESSAGE } from "@/styles/constants";
 import { ButtonWords } from "@/ui";
-import { getDuringTime, shuffleArray } from "@/utils/functions/logic-functions";
+import { showTime, shuffleArray } from "@/utils/functions/logic-functions";
 
 type VerbType = {
   id: string;
@@ -20,7 +20,7 @@ export default function VerbsCouple() {
   const [currentIdEnglish, setCurrentIdEnglish] = useState("");
   const [currentIdRussian, setCurrentIdRussian] = useState("");
   const [countMistake, setCountMistake] = useState(0);
-  const [time, setTime] = useState(0);
+  const [seconds, setSeconds] = useState(0);
 
   const [verbsEnglishShow, setVerbsEnglishShow] = useState<VerbType[]>();
   const [verbsRussianShow, setVerbsRussianShow] = useState<VerbType[]>();
@@ -37,6 +37,22 @@ export default function VerbsCouple() {
       setVerbsRussianShow(shuffleArray(verbsRussian));
     }
   }, [verbsEnglishShow, verbsRussianShow]);
+
+  useEffect(() => {
+    const tick = (num: number) => setSeconds(seconds + num);
+
+    const interval = setInterval(() => tick(1), 1000);
+
+    const cleanup = () => {
+      clearInterval(interval);
+    };
+
+    if (verbsEnglishShow && verbsEnglishShow.length === 0) {
+      cleanup();
+    }
+
+    return cleanup;
+  });
 
   const handleClickButtonEnglish = (id: string) => {
     if (currentIdEnglish === id) {
@@ -94,7 +110,7 @@ export default function VerbsCouple() {
             <InfoBlockRight>
               <span>{`Осталось слов: ${verbsEnglishShow?.length || 0}`}</span>
               <span>{`Количество ошибок: ${countMistake}`}</span>
-              <span>{`Время прохождения: ${time}`}</span>
+              <span>{`Время прохождения: ${showTime(seconds)}`}</span>
             </InfoBlockRight>
             <StyledLink href="/verbs-table">
               Посмотреть таблицу глаголов
@@ -162,7 +178,7 @@ const WrapButton = styled.div`
 
 const InfoBlock = styled.div`
   ${TYPOGRAPHY.THICCCBOI_Medium_20px}
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -170,8 +186,8 @@ const InfoBlock = styled.div`
 `;
 
 const InfoBlockRight = styled.div`
-  margin-bottom: 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
   column-gap: 50px;
 `;

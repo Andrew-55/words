@@ -19,7 +19,10 @@ export const shuffleArray = <T>(array: T[]) => {
   return array;
 };
 
-export const getDuringTime = (startDate: Date) => {
-  const currentDate = new Date();
-  return (currentDate.getTime() - startDate.getTime()) / 1000;
+export const showTime = (countSeconds: number) => {
+  const minutes = Math.floor(countSeconds / 60);
+  const seconds = countSeconds % 60;
+  const printSeconds = seconds > 9 ? `${seconds}` : `0${seconds}`;
+
+  return `${minutes}:${printSeconds}`;
 };
