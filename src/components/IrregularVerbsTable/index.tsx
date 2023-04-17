@@ -1,0 +1,1 @@
+export { IrregularVersTable } from "./IrregularVersTable";

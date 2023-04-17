@@ -1,15 +1,19 @@
 import { useQuery } from "@apollo/client";
 import Head from "next/head";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 
 import { Layout } from "@/components";
-import { GET_IRREGULAR_VERBS, IrregularVerbsType } from "@/entities";
+import { IrregularVersTable } from "@/components/IrregularVerbsTable";
+import { ModalWindow } from "@/components/ModalWindow/ModalWindow";
+import {
+  GET_IRREGULAR_VERBS_COUPLE,
+  IrregularVerbsCoupleType,
+} from "@/entities";
 import { TYPOGRAPHY } from "@/styles";
 import { COLORS, ERROR_MESSAGE } from "@/styles/constants";
-import { ButtonWords } from "@/ui";
+import { Button, ButtonWords } from "@/ui";
 import { showTime, shuffleArray } from "@/utils/functions/logic-functions";
 
 type VerbType = {
@@ -18,13 +22,15 @@ type VerbType = {
 };
 
 export default function VerbsCouple() {
-  const { loading, error, data } =
-    useQuery<IrregularVerbsType>(GET_IRREGULAR_VERBS);
+  const { loading, error, data } = useQuery<IrregularVerbsCoupleType>(
+    GET_IRREGULAR_VERBS_COUPLE
+  );
 
   const [currentIdEnglish, setCurrentIdEnglish] = useState("");
   const [currentIdRussian, setCurrentIdRussian] = useState("");
   const [countMistake, setCountMistake] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [isModalView, setIsModalView] = useState(false);
 
   const [verbsEnglishShow, setVerbsEnglishShow] = useState<VerbType[]>();
   const [verbsRussianShow, setVerbsRussianShow] = useState<VerbType[]>();
@@ -116,9 +122,10 @@ export default function VerbsCouple() {
               <span>{`Количество ошибок: ${countMistake}`}</span>
               <span>{`Время прохождения: ${showTime(seconds)}`}</span>
             </InfoBlockRight>
-            <StyledLink href="/verbs-table">
-              Посмотреть таблицу глаголов
-            </StyledLink>
+            <StyledButton
+              text="Посмотреть таблицу глаголов"
+              onClick={() => setIsModalView(true)}
+            />
           </InfoBlock>
           <WrapVerbs>
             <WrapButton>
@@ -146,6 +153,11 @@ export default function VerbsCouple() {
                 ))}
             </WrapButton>
           </WrapVerbs>
+          {isModalView && (
+            <ModalWindow onActiveModelWindow={() => setIsModalView(false)}>
+              <IrregularVersTable />
+            </ModalWindow>
+          )}
         </Root>
       </Layout>
     </>
@@ -156,12 +168,20 @@ const Root = styled.main`
   width: 100%;
   position: relative;
   width: 100%;
-  padding: 32px 86px;
+  padding: 16px 86px;
 `;
 
-const StyledLink = styled(Link)`
+const StyledButton = styled(Button)`
+  padding: 8px 16px;
+  color: ${COLORS.black};
+  background-color: ${COLORS.dark_yellow};
+  border: none;
   &:hover {
-    color: ${COLORS.red};
+    color: ${COLORS.black};
+    background-color: ${COLORS.yellow};
+  }
+  &:active {
+    background-color: ${COLORS.green};
   }
 `;
 
@@ -172,17 +192,22 @@ const WrapVerbs = styled.div`
 `;
 
 const WrapButton = styled.div`
-  display: flex;
+  display: grid;
+  padding-left: auto;
+  grid-template-columns: repeat(3, 250px);
   max-height: 700px;
-  flex-wrap: wrap;
   justify-content: space-around;
   gap: 15px;
   overflow-y: auto;
+
+  @media (max-width: 1800px) {
+    grid-template-columns: repeat(2, 250px);
+  }
 `;
 
 const InfoBlock = styled.div`
   ${TYPOGRAPHY.THICCCBOI_Medium_20px}
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;

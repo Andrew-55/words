@@ -1,6 +1,8 @@
 export const COLORS = {
   black: "#000000",
   white: "#FFFFFF",
+  dark_yellow: "#BFBF00",
+  yellow: "#FFFF00",
   white_smoke: "#f0f0f0",
   light_green: "#99ff99",
   dim_gray: "#737373",
@@ -12,4 +14,6 @@ export const COLORS = {
   grey: "#808080",
   green: "#00FF00",
   btn_box_shadow: "rgba(252, 88, 66, 0.2)",
+  black_shadow: "#00000090",
+  zambezi: "#5e5e5e",
 };

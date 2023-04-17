@@ -4,9 +4,8 @@ import styled from "styled-components";
 
 import { SvgArrowLeft } from "@/assets";
 import { Layout } from "@/components";
-import { MOCK_DATA } from "@/store/MOCK_DATA";
+import { IrregularVersTable } from "@/components/IrregularVerbsTable";
 import { TYPOGRAPHY } from "@/styles";
-import { COLORS } from "@/styles/constants";
 import { ButtonIcon } from "@/ui";
 
 export default function VerbsTable() {
@@ -21,38 +20,12 @@ export default function VerbsTable() {
       </Head>
       <Layout>
         <Root>
+          <IrregularVersTable />
           <StyledButton
             icon={<SvgArrowLeft />}
             text="Назад"
             onClick={() => router.back()}
           />
-          <TableContainer>
-            <table>
-              <StyledCaption>
-                Таблица неправильных глаголов английского языка
-              </StyledCaption>
-              <StyledTableHead>
-                <tr>
-                  <TitleColumn>№</TitleColumn>
-                  <TitleColumn>Infinitive</TitleColumn>
-                  <TitleColumn>Past</TitleColumn>
-                  <TitleColumn>Past Participle</TitleColumn>
-                  <TitleColumn>Translation</TitleColumn>
-                </tr>
-              </StyledTableHead>
-              <tbody>
-                {MOCK_DATA.verbs.map((verb, index) => (
-                  <StyledLineBody key={verb.id}>
-                    <Cell>{index + 1}</Cell>
-                    <Cell>{verb.infinitive}</Cell>
-                    <Cell>{verb.past}</Cell>
-                    <Cell>{verb.pastParticiple}</Cell>
-                    <Cell>{verb.translation}</Cell>
-                  </StyledLineBody>
-                ))}
-              </tbody>
-            </table>
-          </TableContainer>
         </Root>
       </Layout>
     </>
@@ -73,38 +46,4 @@ const StyledButton = styled(ButtonIcon)`
   left: 86px;
   flex-direction: row-reverse;
   ${TYPOGRAPHY.THICCCBOI_Bold_20px}
-`;
-
-const TableContainer = styled.div`
-  height: 700px;
-  overflow-y: auto;
-`;
-
-const StyledTableHead = styled.thead`
-  position: sticky;
-  top: 0;
-`;
-
-const StyledLineBody = styled.tr`
-  background-color: ${COLORS.eclipse};
-  &:nth-child(2n) {
-    background-color: ${COLORS.nero};
-  }
-`;
-
-const StyledCaption = styled.caption`
-  ${TYPOGRAPHY.DM_Sans_Bold_34px}
-  margin-bottom: 30px;
-`;
-
-const TitleColumn = styled.th`
-  ${TYPOGRAPHY.THICCCBOI_Bold_28px}
-  padding: 10px 20px;
-  background-color: ${COLORS.dim_gray};
-  text-align: start;
-`;
-
-const Cell = styled.td`
-  ${TYPOGRAPHY.THICCCBOI_Medium_24px}
-  padding: 10px 20px;
 `;

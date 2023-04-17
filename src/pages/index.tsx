@@ -1,10 +1,11 @@
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import { Layout } from "@/components";
+import { COLORS } from "@/styles";
 import { Button } from "@/ui";
-
 export default function Home() {
   const router = useRouter();
 
@@ -23,6 +24,9 @@ export default function Home() {
       <Layout>
         <Root>
           <Button text="Найти пару" onClick={handleClick} />
+          <StyledLink href="/verbs-table">
+            Таблица неправильных глаголов
+          </StyledLink>
         </Root>
       </Layout>
     </>
@@ -37,4 +41,10 @@ const Root = styled.main`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const StyledLink = styled(Link)`
+  &:hover {
+    color: ${COLORS.red};
+  }
 `;

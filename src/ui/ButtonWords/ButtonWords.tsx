@@ -44,10 +44,10 @@ const Root = styled.button<{
   box-shadow: 0px 5px 18px ${COLORS.btn_box_shadow};
   letter-spacing: 2px;
   color: ${COLORS.lightgrey};
-  padding: 20px 20px;
+  padding: 8px 8px;
   border-radius: 4px;
   width: 250px;
-  height: 100px;
+  height: 90px;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
