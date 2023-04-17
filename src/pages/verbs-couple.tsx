@@ -1,3 +1,4 @@
+import { useQuery } from "@apollo/client";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -5,7 +6,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 
 import { Layout } from "@/components";
-import { MOCK_DATA } from "@/store/MOCK_DATA";
+import { GET_IRREGULAR_VERBS, IrregularVerbsType } from "@/entities";
 import { TYPOGRAPHY } from "@/styles";
 import { COLORS, ERROR_MESSAGE } from "@/styles/constants";
 import { ButtonWords } from "@/ui";
@@ -17,6 +18,9 @@ type VerbType = {
 };
 
 export default function VerbsCouple() {
+  const { loading, error, data } =
+    useQuery<IrregularVerbsType>(GET_IRREGULAR_VERBS);
+
   const [currentIdEnglish, setCurrentIdEnglish] = useState("");
   const [currentIdRussian, setCurrentIdRussian] = useState("");
   const [countMistake, setCountMistake] = useState(0);
@@ -26,17 +30,17 @@ export default function VerbsCouple() {
   const [verbsRussianShow, setVerbsRussianShow] = useState<VerbType[]>();
 
   useEffect(() => {
-    if (!verbsEnglishShow && !verbsRussianShow) {
-      const verbsEnglish = MOCK_DATA.verbs.map((verb) => {
+    if (!verbsEnglishShow && !verbsRussianShow && data && data.getAllVerbs) {
+      const verbsEnglish = data.getAllVerbs.map((verb) => {
         return { id: verb.id, text: verb.infinitive };
       });
-      const verbsRussian = MOCK_DATA.verbs.map((verb) => {
+      const verbsRussian = data.getAllVerbs.map((verb) => {
         return { id: verb.id, text: verb.translation };
       });
       setVerbsEnglishShow(shuffleArray(verbsEnglish));
       setVerbsRussianShow(shuffleArray(verbsRussian));
     }
-  }, [verbsEnglishShow, verbsRussianShow]);
+  }, [verbsEnglishShow, verbsRussianShow, data, data?.getAllVerbs]);
 
   useEffect(() => {
     const tick = (num: number) => setSeconds(seconds + num);
@@ -171,7 +175,7 @@ const WrapButton = styled.div`
   display: flex;
   max-height: 700px;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
   gap: 15px;
   overflow-y: auto;
 `;
